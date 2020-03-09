@@ -45,13 +45,13 @@
   yum_repository:
     name: ms-client-tools
     description: Microsoft packages
-    baseurl:https://packages.microsoft.com/rhel/7/prod/
+    baseurl: https://packages.microsoft.com/rhel/7/prod/
     gpgkey: https://packages.microsoft.com/keys/microsoft.asc
     gpgcheck: true
 
 - name: Install client tools
   yum:
-    name: "{{ item }}
+    name: "{{ item }}"
     state: present
   loop:
     - mssql-tools 
