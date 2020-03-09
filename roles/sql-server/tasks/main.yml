@@ -6,7 +6,7 @@
   yum_repository:
     name: mssql-server
     description: Microsoft repo for mssql-server
-    baseurl: https://packages.microsoft.com/rhel/8/mssql-server-2019-gdr/ 
+    baseurl: https://packages.microsoft.com/rhel/7/mssql-server-2019-gdr/ 
     gpgkey: https://packages.microsoft.com/keys/microsoft.asc
     gpgcheck: true
 
@@ -40,3 +40,21 @@
   environment:
     - MSSQL_SA_PASSWORD: "{{ MSSQL_SA_PASSWORD }}"
     - MSSQL_PID: "{{ MSSQL_PID }}"
+
+- name: Install MSFT repo
+  yum_repository:
+    name: ms-client-tools
+    description: Microsoft packages
+    baseurl:https://packages.microsoft.com/rhel/7/prod/
+    gpgkey: https://packages.microsoft.com/keys/microsoft.asc
+    gpgcheck: true
+
+- name: Install client tools
+  yum:
+    name: "{{ item }}
+    state: present
+  loop:
+    - mssql-tools 
+    - unixODBC-devel
+  environment: ACCEPT_EULA=Y
+
