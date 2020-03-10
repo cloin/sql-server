@@ -45,6 +45,7 @@
   environment:
     - MSSQL_SA_PASSWORD: "{{ MSSQL_SA_PASSWORD }}"
     - MSSQL_PID: "{{ MSSQL_PID }}"
+  when: sqlcmd is failed
 
 - name: Install MSFT repo
   yum_repository:
