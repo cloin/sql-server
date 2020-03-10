@@ -30,22 +30,23 @@
     path: /usr/bin/python2
   when: (ansible_facts['distribution'] == "RedHat" and ansible_facts['distribution_major_version'] == "8")
 
-- name: Check if MSSQL is already running
-  command: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P Redhat1! -Q "SELECT @@VERSION"
-  register: sqlcmd
+# - name: Check if MSSQL is already configured
+#   command: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P Redhat1! -Q "SELECT @@VERSION"
+#   register: sqlcmd
+#   ignore_errors: true
 
 - name: Install SQL package
   yum:
     name: mssql-server
     state: present
-  when: sqlcmd is failed
+  register: install
 
 - name: Run mssql-conf setup
   command: /opt/mssql/bin/mssql-conf -n setup accept-eula
   environment:
     - MSSQL_SA_PASSWORD: "{{ MSSQL_SA_PASSWORD }}"
     - MSSQL_PID: "{{ MSSQL_PID }}"
-  when: sqlcmd is failed
+  when: install is changed
 
 - name: Install MSFT repo
   yum_repository:
@@ -64,4 +65,4 @@
     - unixODBC-devel
   environment:
     - ACCEPT_EULA: Y
-
+  
