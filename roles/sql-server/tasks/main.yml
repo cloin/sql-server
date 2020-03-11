@@ -80,5 +80,5 @@
     dest: "{{ item.name }}"
     state: link
   loop:
-    - { target: '/usr/lib64/libssl.so.10', name: 'opt/mssql/lib/libssl.so' }
+    - { target: '/usr/lib64/libssl.so.10', name: '/opt/mssql/lib/libssl.so' }
     - { target: '/usr/lib64/libcrypto.so.10', name: '/opt/mssql/lib/libcrypto.so' }
