@@ -6,7 +6,7 @@
   yum_repository:
     name: packages-microsoft-com-mssql-server-2019-gdr
     description: packages-microsoft-com-mssql-server-2019-gdr
-    baseurl: https://packages.microsoft.com/rhel/8/mssql-server-2019-gdr/ 
+    baseurl: https://packages.microsoft.com/rhel/8/mssql-server-2019/
     gpgkey: https://packages.microsoft.com/keys/microsoft.asc
     gpgcheck: true
 
