@@ -1,0 +1,67 @@
+---
+- name: Clean yum repos
+  command: yum clean all
+
+- name: Add MSFT yum repositories
+  yum_repository:
+    name: mssql-server
+    description: Microsoft repo for mssql-server
+    baseurl: https://packages.microsoft.com/rhel/7/mssql-server-2019-gdr/ 
+    gpgkey: https://packages.microsoft.com/keys/microsoft.asc
+    gpgcheck: true
+
+- name: Install python and openssl
+  yum:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - python2
+    - compat-openssl10
+  when: (ansible_facts['distribution'] == "RedHat" and ansible_facts['distribution_major_version'] == "8")
+
+- name: Update all packages
+  yum:
+    name: "*"
+    state: latest
+
+- name: Set default python
+  alternatives:
+    name: python
+    path: /usr/bin/python2
+  when: (ansible_facts['distribution'] == "RedHat" and ansible_facts['distribution_major_version'] == "8")
+
+- name: Install SQL package
+  yum:
+    name: mssql-server
+    state: present
+
+- name: Run mssql-conf setup
+  command: /opt/mssql/bin/mssql-conf -n setup accept-eula
+  environment:
+    - MSSQL_SA_PASSWORD: "{{ MSSQL_SA_PASSWORD }}"
+    - MSSQL_PID: "{{ MSSQL_PID }}"
+
+- name: Install MSFT repo
+  yum_repository:
+    name: ms-client-tools
+    description: Microsoft packages
+    baseurl: https://packages.microsoft.com/rhel/7/prod/
+    gpgkey: https://packages.microsoft.com/keys/microsoft.asc
+    gpgcheck: true
+
+- name: Install client tools
+  yum:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - mssql-tools 
+    - unixODBC-devel
+  environment:
+    - ACCEPT_EULA: Y
+
+- name: Create user
+  mssql_user:
+    name: foo
+    login: bar
+    login_name: sa
+    login_password: password
